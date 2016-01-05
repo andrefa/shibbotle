@@ -1,0 +1,29 @@
+ <beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+		<beans:constructor-arg value="#C0d3Monk3y@Password!Encoder$" />
+	</beans:bean>
+
+	<authentication-manager id="authenticationManager">
+	</authentication-manager>
+    
+	<http realm="Protected API" use-expressions="true" auto-config="false" create-session="stateless" 
+		entry-point-ref="unauthorizedEntryPoint" authentication-manager-ref="authenticationManager">
+		<custom-filter ref="authenticationTokenProcessingFilter" before="FORM_LOGIN_FILTER" />
+		<intercept-url pattern="/rest/shibbotle/secure/**" access="hasRole('role')" />
+	</http>
+
+	<beans:bean id="authenticationTokenProcessingFilter" class="com.codemonkey.shibbotle.security.AuthenticationTokenProcessingFilter" />
+    <beans:bean id="unauthorizedEntryPoint" class="com.codemonkey.shibbotle.security.UnauthorizedEntryPoint" />
+ 	
+</beans:beans>
